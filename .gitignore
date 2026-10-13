@@ -1,0 +1,10 @@
+# Dependencies and OS files
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Temporary archives and test scratchpad
+*.zip
+scratch_*.js
+solve_finder.js
+test_21_only.js

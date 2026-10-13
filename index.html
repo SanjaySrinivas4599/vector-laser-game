@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LASER STRIKE — Tactical Optical Laser Physics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- ======================================================================
+       ANIMATED CYBER HUD BACKGROUND (Matching Reference Holographic Interface)
+       ====================================================================== -->
+  <div class="cyber-hud-background" id="cyber-hud-bg" aria-hidden="true">
+    <div class="hud-scanline"></div>
+    <div class="hud-vignette"></div>
+    <svg class="hud-svg-circuit-layer" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Intense Neon Glow Filter -->
+        <filter id="hud-cyan-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2" />
+          <feMerge>
+            <feMergeNode in="blur2" />
+            <feMergeNode in="blur1" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="hud-intense-glow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur2" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur3" />
+          <feMerge>
+            <feMergeNode in="blur3" />
+            <feMergeNode in="blur2" />
+            <feMergeNode in="blur1" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <!-- Radial Core Gradients -->
+        <radialGradient id="iris-center-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#02091c" stop-opacity="0.95" />
+          <stop offset="60%" stop-color="#04122e" stop-opacity="0.8" />
+          <stop offset="100%" stop-color="#020718" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="dial-radiant-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.6" />
+          <stop offset="40%" stop-color="#00c8ff" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#0088ff" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <!-- 1. Ambient Background Grid & Alignment Crosses -->
+      <g class="hud-bg-grid" opacity="0.14">
+        <pattern id="hud-grid-pat" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#00d2ff" stroke-width="0.8" />
+          <circle cx="0" cy="0" r="1.5" fill="#00f0ff" />
+        </pattern>
+        <rect width="1920" height="1080" fill="url(#hud-grid-pat)" />
+      </g>
+
+      <!-- 2. Central Giant Mechanical Iris / Radar Chamber (from Reference Center) -->
+      <g class="hud-center-iris" transform="translate(960, 540)">
+        <circle r="420" fill="url(#iris-center-grad)" />
+        <!-- Segmented Outer Chamber Rim -->
+        <circle r="380" class="hud-ring iris-outer-segmented" />
+        <circle r="340" class="hud-ring iris-dashed-spin-cw" />
+        <circle r="290" class="hud-ring iris-thin-ring" />
+        <circle r="240" class="hud-ring iris-dashed-spin-ccw" />
+        <circle r="180" class="hud-ring iris-inner-segmented" />
+        <circle r="120" class="hud-ring iris-core-ring" />
+
+        <!-- Radial Crosshair Lines & Ticks -->
+        <g class="iris-ticks" stroke="#00d2ff" stroke-width="1.5" opacity="0.35">
+          <line x1="-390" y1="0" x2="-350" y2="0" />
+          <line x1="350" y1="0" x2="390" y2="0" />
+          <line x1="0" y1="-390" x2="0" y2="-350" />
+          <line x1="0" y1="350" x2="0" y2="390" />
+          <line x1="-280" y1="-280" x2="-250" y2="-250" />
+          <line x1="250" y1="-250" x2="280" y2="-280" />
+          <line x1="-280" y1="280" x2="-250" y2="250" />
+          <line x1="250" y1="250" x2="280" y2="280" />
+        </g>
+      </g>
+
+      <!-- 3. Top-Left Holographic Radar Arc Dial (from Reference Image Top-Left) -->
+      <g class="hud-dial-topleft" transform="translate(240, 260)">
+        <circle r="92" class="hud-ring dial-tl-outer" />
+        <circle r="76" class="hud-ring dial-tl-dashed-ccw" />
+        <circle r="56" class="hud-ring dial-tl-inner" />
+        <circle r="36" fill="rgba(0, 240, 255, 0.1)" stroke="#00f0ff" stroke-width="1.5" />
+        <circle r="6" fill="#00f0ff" class="hud-pulse-glow" />
+        <!-- Arc Bracket Ticks -->
+        <path d="M -85,0 A 85 85 0 0 1 -40,-75" fill="none" stroke="#00f0ff" stroke-width="3" filter="url(#hud-cyan-glow)" />
+        <path d="M -85,0 A 85 85 0 0 0 -40,75" fill="none" stroke="#00f0ff" stroke-width="3" filter="url(#hud-cyan-glow)" />
+        <line x1="-100" y1="0" x2="100" y2="0" stroke="rgba(0,240,255,0.4)" stroke-width="1" />
+        <line x1="0" y1="-100" x2="0" y2="100" stroke="rgba(0,240,255,0.4)" stroke-width="1" />
+      </g>
+
+      <!-- 4. Middle-Right Radiant Holographic Targeting Dial (Brightest feature in Reference Image) -->
+      <g class="hud-dial-bright-right" transform="translate(1580, 520)">
+        <circle r="130" fill="url(#dial-radiant-grad)" class="hud-pulse-glow" />
+        
+        <!-- Thick Glowing Outer Arc Brackets -->
+        <circle r="98" class="hud-ring dial-br-thick-bracket" filter="url(#hud-intense-glow)" />
+        <!-- Fast Counter-Rotating Dashed Telemetry Ring -->
+        <circle r="78" class="hud-ring dial-br-dashed-spin-ccw" filter="url(#hud-cyan-glow)" />
+        <!-- Concentric Inner Reticle Ring -->
+        <circle r="56" class="hud-ring dial-br-inner-ring" />
+        <!-- Glowing Core Pod -->
+        <circle r="34" fill="rgba(0, 240, 255, 0.3)" stroke="#ffffff" stroke-width="2.5" filter="url(#hud-cyan-glow)" class="hud-pulse-core" />
+        <circle r="12" fill="#ffffff" filter="url(#hud-intense-glow)" />
+
+        <!-- 4 Cardinal Crosshair Ticks -->
+        <g stroke="#ffffff" stroke-width="2" filter="url(#hud-cyan-glow)">
+          <line x1="-115" y1="0" x2="-95" y2="0" />
+          <line x1="95" y1="0" x2="115" y2="0" />
+          <line x1="0" y1="-115" x2="0" y2="-95" />
+          <line x1="0" y1="95" x2="0" y2="115" />
+        </g>
+      </g>
+
+      <!-- 5. Outer Cybernetic HUD Frame & Corner Brackets -->
+      <g class="hud-outer-frame">
+        <!-- Top Left Corner Bracket -->
+        <path d="M 60,320 L 60,70 L 320,70" fill="none" stroke="rgba(0, 208, 255, 0.45)" stroke-width="2.5" />
+        <path d="M 90,70 L 90,95 L 60,95" fill="none" stroke="#00f0ff" stroke-width="2" filter="url(#hud-cyan-glow)" />
+        <path d="M 120,52 L 280,52 L 300,70" fill="none" stroke="#00d2ff" stroke-width="2" />
+        <rect x="120" y="46" width="90" height="8" rx="2" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <rect x="220" y="47" width="24" height="6" fill="rgba(0, 240, 255, 0.7)" />
+
+        <!-- Top Right Stepped Cyan Circuit Wing (from Reference Image Top-Right) -->
+        <rect x="1540" y="48" width="260" height="14" rx="2" fill="#00f0ff" filter="url(#hud-intense-glow)" />
+        <rect x="1760" y="68" width="48" height="10" fill="#00d2ff" />
+        <path d="M 1480,72 L 1820,72 L 1860,112 L 1860,320" fill="none" stroke="#00f0ff" stroke-width="3" filter="url(#hud-cyan-glow)" />
+        <path d="M 1600,98 L 1835,98 L 1835,280" fill="none" stroke="rgba(0, 208, 255, 0.5)" stroke-width="1.8" />
+        
+        <!-- Right Edge Data Telemetry Matrix Blocks -->
+        <g fill="#00f0ff" opacity="0.8" filter="url(#hud-cyan-glow)">
+          <rect x="1870" y="140" width="8" height="4" />
+          <rect x="1870" y="150" width="8" height="4" />
+          <rect x="1870" y="160" width="8" height="4" />
+          <rect x="1870" y="170" width="8" height="4" />
+          <rect x="1870" y="180" width="8" height="4" />
+          <rect x="1870" y="210" width="8" height="12" />
+          <rect x="1870" y="230" width="8" height="6" />
+        </g>
+
+        <!-- Bottom Left Corner & Vertical Data Cartridge -->
+        <path d="M 60,740 L 60,1010 L 360,1010" fill="none" stroke="rgba(0, 208, 255, 0.45)" stroke-width="2.5" />
+        <rect x="52" y="820" width="16" height="64" rx="3" fill="#030c22" stroke="#00f0ff" stroke-width="2" filter="url(#hud-cyan-glow)" />
+        <rect x="56" y="830" width="8" height="44" rx="2" fill="#00f0ff" filter="url(#hud-cyan-glow)" class="hud-pulse-glow" />
+        <path d="M 85,890 L 85,985 L 260,985 L 280,1010" fill="none" stroke="rgba(0, 208, 255, 0.5)" stroke-width="2" />
+
+        <!-- Bottom Right Corner & Terminal Bus -->
+        <path d="M 1860,740 L 1860,1010 L 1560,1010" fill="none" stroke="rgba(0, 208, 255, 0.45)" stroke-width="2.5" />
+        <rect x="1600" y="1002" width="80" height="14" rx="3" fill="#00f0ff" filter="url(#hud-intense-glow)" />
+        <rect x="1852" y="780" width="16" height="54" rx="3" fill="#030c22" stroke="#00f0ff" stroke-width="2" filter="url(#hud-cyan-glow)" />
+        <rect x="1856" y="790" width="8" height="34" rx="2" fill="#00f0ff" filter="url(#hud-cyan-glow)" class="hud-pulse-glow" />
+        <path d="M 1835,850 L 1835,985 L 1640,985 L 1620,1010" fill="none" stroke="rgba(0, 208, 255, 0.5)" stroke-width="2" />
+      </g>
+
+      <!-- 6. Interconnecting 90° Circuit Conduits (Static Traces) -->
+      <g class="hud-static-traces" fill="none" stroke="rgba(0, 208, 255, 0.3)" stroke-width="2">
+        <!-- Trace 1: From Top-Left around Radar Dial across to Center -->
+        <path d="M 60,200 L 140,200 L 140,420 L 440,420 L 480,460 L 680,460" />
+        <!-- Trace 2: From Top-Center down into Left Dial -->
+        <path d="M 480,70 L 480,180 L 320,180 L 320,200" />
+        <!-- Trace 3: From Center Iris over to Right Dial -->
+        <path d="M 1240,460 L 1420,460 L 1460,520 L 1490,520" />
+        <!-- Trace 4: From Top-Right Block down into Right Dial -->
+        <path d="M 1720,70 L 1720,380 L 1660,380 L 1660,440" />
+        <!-- Trace 5: From Right Dial down to Bottom Right Terminal -->
+        <path d="M 1660,600 L 1660,780 L 1780,780 L 1780,940 L 1690,940" />
+        <!-- Trace 6: Cross-horizontal conduit -->
+        <path d="M 240,680 L 460,680 L 490,710 L 740,710" />
+        <!-- Trace 7: Bottom cross conduit -->
+        <path d="M 820,985 L 1180,985 L 1220,950 L 1460,950" />
+      </g>
+
+      <!-- 7. Active Traveling Circuit Energy Pulses (Animated Data Flows) -->
+      <g class="hud-circuit-pulses" fill="none" stroke="#ffffff" stroke-width="3" filter="url(#hud-cyan-glow)">
+        <path d="M 60,200 L 140,200 L 140,420 L 440,420 L 480,460 L 680,460" class="pulse-flow pulse-1" />
+        <path d="M 480,70 L 480,180 L 320,180 L 320,200" class="pulse-flow pulse-2" />
+        <path d="M 1240,460 L 1420,460 L 1460,520 L 1490,520" class="pulse-flow pulse-3" />
+        <path d="M 1720,70 L 1720,380 L 1660,380 L 1660,440" class="pulse-flow pulse-1" />
+        <path d="M 1660,600 L 1660,780 L 1780,780 L 1780,940 L 1690,940" class="pulse-flow pulse-2" />
+        <path d="M 240,680 L 460,680 L 490,710 L 740,710" class="pulse-flow pulse-3" />
+        <path d="M 820,985 L 1180,985 L 1220,950 L 1460,950" class="pulse-flow pulse-1" />
+      </g>
+
+      <!-- 8. Circuit Junction IC Pads & Status LEDs -->
+      <g class="hud-junction-chips">
+        <!-- Chip 1 -->
+        <g transform="translate(432, 412)">
+          <rect width="16" height="16" rx="2" fill="#04122e" stroke="#00f0ff" stroke-width="1.5" />
+          <circle cx="8" cy="8" r="3" fill="#00f0ff" class="hud-pulse-glow" />
+        </g>
+        <!-- Chip 2 -->
+        <g transform="translate(1412, 452)">
+          <rect width="16" height="16" rx="2" fill="#04122e" stroke="#00f0ff" stroke-width="1.5" />
+          <circle cx="8" cy="8" r="3" fill="#00f0ff" class="hud-pulse-glow" />
+        </g>
+        <!-- Chip 3 -->
+        <g transform="translate(1652, 372)">
+          <rect width="16" height="16" rx="2" fill="#04122e" stroke="#00f0ff" stroke-width="1.5" />
+          <circle cx="8" cy="8" r="3" fill="#00f0ff" class="hud-pulse-glow" />
+        </g>
+        <!-- Chip 4 -->
+        <g transform="translate(482, 702)">
+          <rect width="16" height="16" rx="2" fill="#04122e" stroke="#00f0ff" stroke-width="1.5" />
+          <circle cx="8" cy="8" r="3" fill="#00f0ff" class="hud-pulse-glow" />
+        </g>
+
+        <!-- Circuit Corner Nodes (Small Glowing Cyan Dots) -->
+        <circle cx="140" cy="200" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="140" cy="420" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="480" cy="180" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="1460" cy="520" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="1780" cy="780" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="1780" cy="940" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+        <circle cx="1180" cy="985" r="3" fill="#00f0ff" filter="url(#hud-cyan-glow)" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="app-container">
+    <!-- Top System Header & Sci-Fi Combat HUD -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <span class="laser-dot"></span>
+          <span class="laser-ray"></span>
+        </div>
+        <div class="brand-text">
+          <h1 class="logo-title">LASER STRIKE</h1>
+          <span class="system-sub">VECTOR_VOID // AIM • REFLECT • SCORE</span>
+        </div>
+      </div>
+
+      <!-- Combat Resource Gauges (HP / Energy & Shield Lock) -->
+      <div class="hud-meters-group">
+        <div class="hud-bar-wrapper" title="Laser Core Energy">
+          <span class="hud-bar-icon">♥ HP</span>
+          <div class="hud-bar-track">
+            <div class="hud-bar-fill fill-cyan" style="width: 90%;"></div>
+          </div>
+          <span class="hud-bar-val">90/100</span>
+        </div>
+        <div class="hud-bar-wrapper" title="Sensor Array Lock Capacity">
+          <span class="hud-bar-icon">🛡 SHIELD</span>
+          <div class="hud-bar-track">
+            <div class="hud-bar-fill fill-blue" style="width: 70%;"></div>
+          </div>
+          <span class="hud-bar-val">70/100</span>
+        </div>
+      </div>
+
+      <!-- Quick Navigation & Level Selection -->
+      <div class="header-nav-actions">
+        <button id="btn-replay-intro" class="header-action-btn" title="View Cyber Intro Keyframe">
+          <span class="btn-glyph">🔒</span>
+          <span>INTRO</span>
+        </button>
+        <button id="btn-open-levels" class="header-action-btn" title="Open Level Progression Directory">
+          <span class="btn-glyph">▦</span>
+          <span>SECTORS</span>
+        </button>
+        <button id="btn-open-menu" class="header-action-btn" title="Open Main Chamber Menu">
+          <span class="btn-glyph">▤</span>
+          <span>MENU</span>
+        </button>
+      </div>
+
+      <!-- Development Stage Progress Indicator -->
+      <nav class="step-nav" aria-label="Development Stages">
+        <button class="step-btn" data-step="1" title="Step 1: Ray-segment intersection and obstacle occlusion">
+          <span class="step-num">01</span>
+          <span class="step-label">RAYCAST</span>
+        </button>
+        <button class="step-btn" data-step="2" title="Step 2: Vector surface normal and specular reflection">
+          <span class="step-num">02</span>
+          <span class="step-label">REFLECT</span>
+        </button>
+        <button class="step-btn" data-step="3" title="Step 3: Interactive manipulation and kinematic controls">
+          <span class="step-num">03</span>
+          <span class="step-label">CONTROL</span>
+        </button>
+        <button class="step-btn active" data-step="4" title="Step 4: Real-time telemetry, efficiency scoring, and metrics">
+          <span class="step-num">04</span>
+          <span class="step-label">TELEMETRY</span>
+        </button>
+      </nav>
+
+      <!-- Chamber Header Status & Controls -->
+      <div class="header-status">
+        <div class="status-indicator ready" id="header-system-state">
+          <span class="status-pip"></span>
+          <span class="status-text" id="system-state-label">SYSTEM READY</span>
+        </div>
+        <button id="btn-pause-toggle" class="icon-toggle-btn" title="Pause / Resume Chamber Simulation" aria-label="Toggle Pause">
+          <span id="pause-icon">⏸</span>
+        </button>
+        <button id="btn-audio-toggle" class="icon-toggle-btn" title="Toggle Synthesized Audio" aria-label="Toggle Sound">
+          <span id="audio-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Objective / Mission Briefing Banner -->
+    <div class="mission-brief-bar">
+      <div class="brief-tag">CURRENT OBJECTIVE</div>
+      <div class="brief-text" id="mission-objective-text">
+        Calibrate optical elements to direct the laser beam into the receiver sensor plate.
+      </div>
+      <div class="brief-mechanic-tag" id="mission-mechanic-badge">MECHANIC: ROTATION</div>
+    </div>
+
+    <!-- Main Workspace Layout -->
+    <main class="main-layout">
+      <!-- Left Column: Arena & Canvas -->
+      <section class="arena-section" aria-label="Laser Testing Chamber">
+        <div class="arena-topbar">
+          <div class="arena-meta">
+            <span class="chamber-tag" id="chamber-tag-display">CHAMBER 01</span>
+            <span class="separator">//</span>
+            <span class="chamber-mode" id="chamber-mode-display">LEVEL 1: PRIMARY CALIBRATION</span>
+          </div>
+
+          <div class="arena-quick-controls">
+            <label class="toggle-control" title="Toggle Real-Time Trajectory Preview">
+              <input type="checkbox" id="chk-preview" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">PREVIEW TRAJECTORY</span>
+            </label>
+
+            <label class="toggle-control" title="Switch between Step 1 Absorption and Step 2 Reflection">
+              <input type="checkbox" id="chk-reflection-mode" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-text" id="reflection-mode-label">REFLECTION: ON</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Canvas Container with Visual Crosshair Overlay -->
+        <div class="canvas-wrapper" id="canvas-container">
+          <canvas id="game-canvas" width="960" height="540"></canvas>
+          <div class="canvas-hud-overlay">
+            <div class="hud-corner top-left" id="hud-chamber-id">CH-01 // 960x540</div>
+            <div class="hud-corner top-right">EMISSION λ: 632.8 nm</div>
+            <div class="hud-corner bottom-left" id="hud-pointer-coords">X: 000 | Y: 000</div>
+            <div class="hud-corner bottom-right" id="hud-active-target">ACTIVE: EMITTER</div>
+          </div>
+
+          <!-- Selection & Interaction Floating Indicator -->
+          <div id="selection-banner" class="selection-banner hidden">
+            <span id="selection-name">MIRROR ALPHA</span>
+            <span class="selection-hint">DRAG TO MOVE // [Q]/[E] ROTATE</span>
+          </div>
+
+          <!-- In-Game Pause Watermark -->
+          <div id="pause-watermark" class="pause-watermark hidden">
+            <div class="pause-label">SIMULATION PAUSED</div>
+            <div class="pause-sub">PRESS [SPACE] OR PAUSE BUTTON TO RESUME</div>
+          </div>
+        </div>
+
+        <!-- Level Selector & Global Action Bar -->
+        <div class="arena-bottom-bar">
+          <div class="level-selector-group" id="quick-level-tabs">
+            <span class="bar-label">SECTOR:</span>
+            <button class="level-tab-btn active" data-level="1">01</button>
+            <button class="level-tab-btn" data-level="2">02</button>
+            <button class="level-tab-btn" data-level="3">03</button>
+            <button class="level-tab-btn" data-level="4">04</button>
+            <button class="level-tab-btn" data-level="5">05</button>
+            <button class="level-tab-btn" data-level="6">06</button>
+            <button class="level-tab-btn" data-level="7">07</button>
+            <button class="level-tab-btn" data-level="8">08</button>
+            <button class="level-tab-btn" data-level="9">09</button>
+            <button class="level-tab-btn" data-level="10">10</button>
+            <button class="level-tab-btn" data-level="11">11</button>
+            <button class="level-tab-btn" data-level="12">12</button>
+            <button class="level-tab-btn" data-level="13">13</button>
+            <button class="level-tab-btn" data-level="14">14</button>
+            <button class="level-tab-btn" data-level="15">15</button>
+            <button class="level-tab-btn" data-level="16">16</button>
+            <button class="level-tab-btn" data-level="17">17</button>
+            <button class="level-tab-btn" data-level="18">18</button>
+            <button class="level-tab-btn" data-level="19">19</button>
+            <button class="level-tab-btn" data-level="20">20</button>
+            <button class="level-tab-btn" data-level="21">21</button>
+          </div>
+
+          <div class="arena-actions">
+            <button id="btn-fire" class="action-btn fire-btn">
+              <span class="btn-icon">⚡</span>
+              <span class="btn-text">FIRE BEAM</span>
+            </button>
+            <button id="btn-reset" class="action-btn reset-btn">
+              <span class="btn-icon">↺</span>
+              <span class="btn-text">RESET PUZZLE</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Control Panel & Live Telemetry -->
+      <aside class="sidebar-section" aria-label="Chamber Telemetry and Controls">
+        <!-- Telemetry & Scoring Dashboard -->
+        <div class="panel-box telemetry-box">
+          <div class="panel-header">
+            <span class="panel-title">CHAMBER TELEMETRY &amp; METRICS</span>
+            <span class="panel-badge" id="telemetry-badge">LIVE 60Hz</span>
+          </div>
+
+          <div class="telemetry-grid">
+            <div class="tele-item">
+              <span class="tele-label">RECEIVER STATUS</span>
+              <span class="tele-value status-val val-inactive" id="val-receiver-status">INACTIVE</span>
+            </div>
+            <div class="tele-item">
+              <span class="tele-label">TOTAL BOUNCES</span>
+              <span class="tele-value" id="val-bounces">0 / 8</span>
+            </div>
+            <div class="tele-item">
+              <span class="tele-label">INCIDENT ANGLE (θᵢ)</span>
+              <span class="tele-value highlight-cyan" id="val-incident-angle">--.-°</span>
+            </div>
+            <div class="tele-item">
+              <span class="tele-label">REFLECTION ANGLE (θᵣ)</span>
+              <span class="tele-value highlight-cyan" id="val-reflection-angle">--.-°</span>
+            </div>
+            <div class="tele-item">
+              <span class="tele-label">EMITTER BEARING</span>
+              <span class="tele-value" id="val-emitter-angle">0.0°</span>
+            </div>
+            <div class="tele-item">
+              <span class="tele-label">IMPACT SURFACE</span>
+              <span class="tele-value" id="val-impact-surface">NONE</span>
+            </div>
+          </div>
+
+          <!-- Scoring and Efficiency Stats -->
+          <div class="score-card">
+            <div class="score-card-top">
+              <div class="score-primary">
+                <span class="score-title">ACCUMULATED SCORE</span>
+                <span class="score-number" id="val-score">1000</span>
+              </div>
+              <div class="star-rating" id="star-display" title="Performance Star Rating">
+                <span class="star empty" data-star="1">★</span>
+                <span class="star empty" data-star="2">★</span>
+                <span class="star empty" data-star="3">★</span>
+              </div>
+            </div>
+
+            <div class="metrics-row">
+              <div class="metric-cell">
+                <span class="cell-label">COMMITTED MOVES</span>
+                <span class="cell-val" id="val-moves">0</span>
+              </div>
+              <div class="metric-cell">
+                <span class="cell-label">ELAPSED TIME</span>
+                <span class="cell-val" id="val-time">00:00</span>
+              </div>
+              <div class="metric-cell">
+                <span class="cell-label">TIME BONUS</span>
+                <span class="cell-val highlight-green" id="val-time-bonus">+300</span>
+              </div>
+            </div>
+
+            <div class="rating-thresholds" id="rating-explanation">
+              <span class="threshold-tag">★★★ &ge; 850 PTS</span>
+              <span class="threshold-tag">★★☆ &ge; 600 PTS</span>
+              <span class="threshold-tag">★☆☆ &gt; 0 PTS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Actuator / Kinematics Controls -->
+        <div class="panel-box controls-box">
+          <div class="panel-header">
+            <span class="panel-title">KINEMATIC ACTUATION CONTROLS</span>
+            <span class="panel-badge" id="selected-badge">EMITTER SELECTED</span>
+          </div>
+
+          <!-- Dynamic Selected Target Tabs -->
+          <div class="selector-tabs" id="entity-selector-tabs">
+            <button class="entity-tab-btn active" data-entity="emitter">EMITTER</button>
+            <button class="entity-tab-btn" data-entity="mirror-0">MIRROR 01</button>
+          </div>
+
+          <!-- Angle Slider & Step Buttons -->
+          <div class="actuator-form">
+            <div class="form-row-header">
+              <label for="slider-rotation" class="form-label" id="actuator-label">EMITTER ORIENTATION (θ)</label>
+              <div class="angle-display">
+                <input type="number" id="num-angle" min="-180" max="180" step="1" value="0">
+                <span class="unit">DEG</span>
+              </div>
+            </div>
+
+            <div class="slider-wrapper">
+              <input type="range" id="slider-rotation" min="-180" max="180" step="0.5" value="0">
+            </div>
+
+            <div class="nudge-buttons">
+              <button class="nudge-btn" id="btn-nudge-ccw-10" title="Rotate Counter-Clockwise 10°">-10°</button>
+              <button class="nudge-btn" id="btn-nudge-ccw-1" title="Rotate Counter-Clockwise 1°">-1°</button>
+              <button class="nudge-btn" id="btn-aim-receiver" title="Auto-Aim Toward Target Receiver">AIM TARGET</button>
+              <button class="nudge-btn" id="btn-nudge-cw-1" title="Rotate Clockwise 1°">+1°</button>
+              <button class="nudge-btn" id="btn-nudge-cw-10" title="Rotate Clockwise 10°">+10°</button>
+            </div>
+          </div>
+
+          <!-- Tactical Keyboard & Mouse Controls Guide -->
+          <div class="instructions-card">
+            <div class="instructions-header">
+              <span class="inst-icon">🎮</span>
+              <span class="inst-title">OPERATOR INPUT SHORTCUTS</span>
+            </div>
+            <div class="instruction-line">
+              <span class="key-cap">DRAG</span>
+              <span>Aim Emitter, glide Rail Mirrors, or adjust Prisms.</span>
+            </div>
+            <div class="instruction-line">
+              <span class="key-cap">CLICK</span>
+              <span>Select optical unit to activate precision dials &amp; telemetry.</span>
+            </div>
+            <div class="instruction-line">
+              <span class="key-cap">Q / E</span>
+              <span>Fine angle adjustment (&plusmn;1&deg; normal, &plusmn;5&deg; with Shift).</span>
+            </div>
+            <div class="instruction-line">
+              <span class="key-cap">SPACE</span>
+              <span>Fire laser beam burst and pulse background HUD.</span>
+            </div>
+            <div class="instruction-line">
+              <span class="key-cap">R</span>
+              <span>Reset active sector chamber to default setup.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Bottom Collapsible Information Panel: Examiner & Stage Reference -->
+    <footer class="info-footer" id="info-footer">
+      <div class="info-header">
+        <div class="info-title-group">
+          <span class="info-icon">📖</span>
+          <div class="info-title-text-wrap">
+            <h3 class="info-heading">PHYSICS KNOWLEDGE BASE &amp; DEVELOPMENT STAGES</h3>
+            <p class="info-subtitle">Interactive Theoretical Principles, Vector Formulas &amp; Scoring Specification</p>
+          </div>
+        </div>
+        <div class="info-header-right">
+          <div class="stage-tabs-switch" role="tablist" aria-label="Development Stages">
+            <button class="stage-tab-btn" data-panel="1" role="tab">
+              <span class="tab-step-badge">01</span>
+              <span class="tab-label">RAYCASTING</span>
+            </button>
+            <button class="stage-tab-btn" data-panel="2" role="tab">
+              <span class="tab-step-badge">02</span>
+              <span class="tab-label">REFLECTION</span>
+            </button>
+            <button class="stage-tab-btn" data-panel="3" role="tab">
+              <span class="tab-step-badge">03</span>
+              <span class="tab-label">KINEMATICS</span>
+            </button>
+            <button class="stage-tab-btn active" data-panel="4" role="tab">
+              <span class="tab-step-badge">04</span>
+              <span class="tab-label">TELEMETRY</span>
+            </button>
+          </div>
+          <button id="btn-toggle-info-footer" class="info-collapse-btn" title="Toggle section expansion" aria-expanded="true">
+            <span class="toggle-icon">▼</span>
+            <span class="toggle-text-btn">COLLAPSE</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="info-content-container" id="info-content-container">
+        <!-- Stage 1 Details -->
+        <div class="stage-content-panel" id="panel-step-1">
+          <div class="stage-columns">
+            <div class="stage-col">
+              <h4>1. Ray Parametrization &amp; Chamber Geometry</h4>
+              <p>A laser ray originates from emitter origin point <strong>O</strong> and propagates along normalized unit direction vector <strong>D</strong>:</p>
+              <div class="formula-box">
+                <span class="formula-title">Ray Vector Equation</span>
+                <code>P(t) = O + t · D,  for t ≥ 0</code>
+              </div>
+              <p>Chamber walls, optical mirrors, and detector plates are modeled as 2D planar line segments bounded between endpoints <strong>A</strong> and <strong>B</strong>:</p>
+              <div class="formula-box">
+                <span class="formula-title">Line Segment Equation</span>
+                <code>Q(s) = A + s · (B − A),  for s ∈ [0, 1]</code>
+              </div>
+            </div>
+
+            <div class="stage-col">
+              <h4>2. Nearest Positive Intersection</h4>
+              <p>Equating <code>P(t) = Q(s)</code> yields a system of two linear equations solved using 2D cross-product determinants:</p>
+              <div class="formula-box">
+                <span class="formula-title">Distance &amp; Segment Scalars</span>
+                <code>t = ((A − O) × (B − A)) / (D × (B − A))</code>
+                <code>s = ((A − O) × D) / (D × (B − A))</code>
+              </div>
+              <p>A valid optical collision occurs when the determinant denominator ≠ 0, segment scalar <code>s ∈ [0, 1]</code>, and ray distance <code>t > ε</code> (where ε = 0.5 px). The raycaster checks all boundaries to find the minimal positive distance <code>t_min</code>, halting the beam at the nearest occluding surface.</p>
+            </div>
+
+            <div class="stage-col highlight-col">
+              <h4>Step 1: Calibration Mode</h4>
+              <p>In initial Step 1 calibration mode, mirrors act as solid non-reflective barriers (pure ray-occlusion mode). The laser stops immediately upon contact with the mirror surface, visually proving accurate collision point calculation, parametric clipping, and nearest obstacle sorting.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2 Details -->
+        <div class="stage-content-panel" id="panel-step-2">
+          <div class="stage-columns">
+            <div class="stage-col">
+              <h4>1. Vector Law of Specular Reflection</h4>
+              <p>When the laser impacts an optical mirror at point <strong>P_hit</strong>, the reflected direction vector <strong>R</strong> is computed using Snell's specular reflection law:</p>
+              <div class="formula-box primary-formula">
+                <span class="formula-title">Specular Reflection Vector Formula</span>
+                <code>R = D − 2 · (D · N) · N</code>
+              </div>
+              <table class="variable-table">
+                <thead>
+                  <tr><th>Symbol</th><th>Description</th><th>Type</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>D</strong></td><td>Incident ray unit vector (||D|| = 1)</td><td>2D Vector</td></tr>
+                  <tr><td><strong>N</strong></td><td>Surface normal unit vector facing against D</td><td>2D Vector</td></tr>
+                  <tr><td><strong>D · N</strong></td><td>Scalar dot product: cos(π − θᵢ) = −cos θᵢ</td><td>Scalar</td></tr>
+                  <tr><td><strong>R</strong></td><td>Reflected ray unit vector (||R|| = 1)</td><td>2D Vector</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="stage-col">
+              <h4>2. Multi-Bounce &amp; Epsilon Origin Offset</h4>
+              <p>To prevent floating-point rounding errors from causing the ray to immediately re-collide with the exact same mirror at <code>t ≈ 0</code>, the reflection origin is shifted forward along <strong>R</strong>:</p>
+              <div class="formula-box">
+                <span class="formula-title">Secondary Ray Origin</span>
+                <code>O_next = P_hit + R · ε,  where ε = 0.5 px</code>
+              </div>
+              <p>The raycaster recurses up to 8 bounces. Propagation terminates if the beam strikes a wall, reaches receiver sensor aperture, or exhausts maximum bounces.</p>
+            </div>
+
+            <div class="stage-col highlight-col">
+              <h4>Surface Normal &amp; Snell's Law</h4>
+              <p>Incident angle θᵢ and reflected angle θᵣ are evaluated relative to surface normal <strong>N</strong>:</p>
+              <div class="formula-box">
+                <span class="formula-title">Equal Angles Theorem</span>
+                <code>θᵢ = arccos(−D · N)  ≡  θᵣ = arccos(R · N)</code>
+              </div>
+              <p>Both angles are strictly identical according to Snell's law and are continuously measured and displayed in degrees in the live telemetry panel.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3 Details -->
+        <div class="stage-content-panel" id="panel-step-3">
+          <div class="stage-columns">
+            <div class="stage-col">
+              <h4>1. Kinematic Positioning &amp; Clamping</h4>
+              <p>Optical mirrors support direct pointer and touch dragging. Coordinates are mapped from screen space to tactical chamber space and clamped to the perimeter chamber walls with safe margins so optical elements cannot escape the containment volume.</p>
+            </div>
+
+            <div class="stage-col">
+              <h4>2. Rotational Actuator Synchronization</h4>
+              <p>Mirror geometry is defined by center position (x, y), span length L, and rotation angle θ. Both endpoints are recalculated dynamically in real time:</p>
+              <div class="formula-box">
+                <span class="formula-title">Segment Endpoints Transformation</span>
+                <code>A = (x − (L/2)·cos θ,  y − (L/2)·sin θ)</code>
+                <code>B = (x + (L/2)·cos θ,  y + (L/2)·sin θ)</code>
+              </div>
+              <p>This guarantees 100% visual and mathematical alignment between rendered graphics and ray collision segments.</p>
+            </div>
+
+            <div class="stage-col highlight-col">
+              <h4>3. Discrete Move Registration</h4>
+              <p>To ensure fair gameplay scoring, continuous dragging does not flood the move counter. A move is only committed when the pointer is released and displacement exceeds threshold:</p>
+              <div class="formula-box">
+                <span class="formula-title">Commit Threshold</span>
+                <code>Δd > 3 px  OR  Δθ > 0.8°</code>
+              </div>
+              <p>Small accidental touches are disregarded, protecting your efficiency score.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 4 Details -->
+        <div class="stage-content-panel active" id="panel-step-4">
+          <div class="stage-columns">
+            <div class="stage-col">
+              <h4>1. Real-Time Telemetry &amp; Scoring Model</h4>
+              <p>The telemetry subsystem samples the laser beam at 60 FPS, calculating reflection counts, incidence angles, impact targets, and receiver alignment.</p>
+              <div class="formula-box primary-formula">
+                <span class="formula-title">Chamber Score Evaluation Formula</span>
+                <code>Score = max(0, 1000 − 50·M − 100·B_extra + T_bonus)</code>
+              </div>
+              <ul class="styled-feature-list">
+                <li><strong>M:</strong> Number of committed orientation adjustments.</li>
+                <li><strong>B_extra:</strong> Surplus bounces beyond the optimal sector path.</li>
+                <li><strong>T_bonus:</strong> Time efficiency bonus granted upon victory.</li>
+              </ul>
+            </div>
+
+            <div class="stage-col">
+              <h4>2. Scoring Rules &amp; Penalties</h4>
+              <ul class="rules-card-list">
+                <li class="rule-item">
+                  <span class="rule-icon score-base">🎯</span>
+                  <div class="rule-content">
+                    <strong>Base Score:</strong>
+                    <span>Starts at 1,000 points upon puzzle initialization.</span>
+                  </div>
+                </li>
+                <li class="rule-item">
+                  <span class="rule-icon score-penalty">⏱</span>
+                  <div class="rule-content">
+                    <strong>Move Penalty:</strong>
+                    <span>-50 points deducted per committed adjustment (M).</span>
+                  </div>
+                </li>
+                <li class="rule-item">
+                  <span class="rule-icon score-penalty">⚡</span>
+                  <div class="rule-content">
+                    <strong>Bounce Penalty:</strong>
+                    <span>-100 points deducted per unnecessary surplus bounce.</span>
+                  </div>
+                </li>
+                <li class="rule-item">
+                  <span class="rule-icon score-bonus">⏳</span>
+                  <div class="rule-content">
+                    <strong>Time Bonus:</strong>
+                    <span>Up to +300 points for swift completion: max(0, 300 − 5·sec). Awarded only on receiver activation!</span>
+                  </div>
+                </li>
+                <li class="rule-item">
+                  <span class="rule-icon score-bonus">⭐</span>
+                  <div class="rule-content">
+                    <strong>Efficiency Bonus:</strong>
+                    <span>+200 bonus points for solving within par moves and bounces.</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="stage-col highlight-col">
+              <h4>3. Performance Star Rating Tiers</h4>
+              <div class="star-tiers-grid">
+                <div class="tier-card tier-3-stars">
+                  <div class="tier-badge">★★★ 3 STARS</div>
+                  <div class="tier-threshold">Score &ge; 850 PTS</div>
+                  <div class="tier-desc">Master Calibration: Minimal moves, optimal bounce count, and quick execution.</div>
+                </div>
+                <div class="tier-card tier-2-stars">
+                  <div class="tier-badge">★★☆ 2 STARS</div>
+                  <div class="tier-threshold">Score &ge; 600 PTS</div>
+                  <div class="tier-desc">Standard Alignment: Target acquired with moderate moves and few extra bounces.</div>
+                </div>
+                <div class="tier-card tier-1-star">
+                  <div class="tier-badge">★☆☆ 1 STAR</div>
+                  <div class="tier-threshold">Score &gt; 0 PTS</div>
+                  <div class="tier-desc">Operational Clearance: Receiver activated, but with high move penalties.</div>
+                </div>
+                <div class="tier-card tier-0-stars">
+                  <div class="tier-badge">☆☆☆ 0 STARS</div>
+                  <div class="tier-threshold">Score = 0 PTS / Inactive</div>
+                  <div class="tier-desc">Calibration Failure: Sensor unaligned or score depleted.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ======================================================================
+       OVERLAYS & MODALS (STEPS 5, 6, 7 — LASER STRIKE SUITE)
+       ====================================================================== -->
+
+  <!-- Intro Keyframe Splash Overlay (Cyber Security Video Frame) -->
+  <div id="intro-keyframe-overlay" class="intro-keyframe-overlay">
+    <div class="intro-backdrop-warp"></div>
+    <div class="intro-keyframe-container">
+      <!-- Top Diagnostic Header -->
+      <div class="intro-hud-header">
+        <div class="intro-hud-title">
+          <span class="intro-glyph">🔒</span>
+          <span>SYS.SECURE_AUTH // VECTOR_VOID v5.0</span>
+        </div>
+        <button id="btn-skip-intro" class="intro-skip-btn" title="Skip Intro">
+          <span>SKIP [ESC]</span>
+          <span class="intro-skip-arrow">»</span>
+        </button>
+      </div>
+
+      <!-- Main Frame Chassis with User's Uploaded Video Keyframe -->
+      <div class="intro-frame-chassis" id="intro-frame-chassis">
+        <div class="intro-frame-corner corner-tl"></div>
+        <div class="intro-frame-corner corner-tr"></div>
+        <div class="intro-frame-corner corner-bl"></div>
+        <div class="intro-frame-corner corner-br"></div>
+
+        <!-- Traveling Holographic Laser Scanline -->
+        <div class="intro-scanline-beam"></div>
+
+        <!-- User Uploaded Intro Video Frame -->
+        <img src="assets/intro_keyframe.png" alt="VECTOR_VOID Cyber Security Intro Keyframe" class="intro-keyframe-image" id="intro-keyframe-img" />
+
+        <!-- Atmospheric Energy Glow Behind Bezel -->
+        <div class="intro-image-glow"></div>
+      </div>
+
+      <!-- Bottom Interactive Access Panel -->
+      <div class="intro-hud-footer">
+        <div class="intro-status-line" id="intro-status-text">
+          <span class="intro-blink-dot"></span>
+          <span>GPT DEFENSE PROTOCOL ACTIVE • CLICK OR PRESS SPACE TO INITIALIZE</span>
+        </div>
+
+        <button id="btn-enter-chamber" class="intro-unlock-btn" title="Initialize System & Enter Game">
+          <span class="btn-glow-layer"></span>
+          <span class="btn-lock-icon">🔓</span>
+          <span class="btn-unlock-text">INITIALIZE SYSTEM // ENTER CHAMBER</span>
+          <span class="btn-arrow-icon">▶</span>
+        </button>
+
+        <div class="intro-sub-instructions">
+          <span>PRESS [SPACE] OR [ENTER] TO ACCESS TACTICAL OPTICS CHAMBER</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Title Screen / Main Menu (Panel 1 from Reference Image) -->
+  <div id="modal-title-screen" class="modal-overlay hidden">
+    <div class="modal-dialog title-dialog">
+      <div class="title-hero">
+        <div class="hero-winged-header">
+          <div class="title-wing wing-left"></div>
+          <h2 class="hero-title">LASER STRIKE</h2>
+          <div class="title-wing wing-right"></div>
+        </div>
+        <div class="hero-subtitle">BLAST • SURVIVE • SCORE</div>
+        <div class="hero-version">VECTOR_VOID // TACTICAL OPTICS SPEC 5.0</div>
+      </div>
+
+      <div class="title-actions">
+        <button id="btn-menu-continue" class="menu-action-btn primary">
+          <span class="btn-icon">▶</span>
+          <span>START GAME</span>
+        </button>
+        <button id="btn-menu-intro" class="menu-action-btn">
+          <span class="btn-icon">🔒</span>
+          <span>REPLAY INTRO KEYFRAME</span>
+        </button>
+        <button id="btn-menu-level-select" class="menu-action-btn">
+          <span class="btn-icon">🚀</span>
+          <span>LOADOUT // SECTORS</span>
+        </button>
+        <button id="btn-menu-instructions" class="menu-action-btn">
+          <span class="btn-icon">⚙</span>
+          <span>SETTINGS // BRIEFING</span>
+        </button>
+      </div>
+
+      <div class="title-footer-note">
+        <span>PRESS [SPACE] TO FIRE // [Q]/[E] TO ROTATE // [ESC] TO PAUSE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Level Selection Directory -->
+  <div id="modal-level-select" class="modal-overlay hidden">
+    <div class="modal-dialog level-select-dialog">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <span class="modal-glyph">▦</span>
+          <span>SECTOR CALIBRATION DIRECTORY</span>
+        </div>
+        <button class="modal-close-btn" id="btn-close-level-select" title="Close Directory">&times;</button>
+      </div>
+
+      <div class="level-directory-grid" id="level-directory-grid">
+        <!-- Dynamically rendered level cards -->
+      </div>
+
+      <div class="modal-footer">
+        <span class="storage-note">PROGRESS STORED LOCALLY VIA HTML5 LOCALSTORAGE</span>
+        <button id="btn-reset-progress" class="text-danger-btn" title="Clear saved level progress">RESET PROGRESS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Level Completed Celebration Modal (Panel 4 from Reference Image) -->
+  <div id="modal-level-complete" class="modal-overlay hidden">
+    <div class="modal-dialog victory-dialog">
+      <div class="victory-header">
+        <div class="victory-winged-header">
+          <div class="title-wing wing-left"></div>
+          <h2 class="victory-title-large">VICTORY</h2>
+          <div class="title-wing wing-right"></div>
+        </div>
+        <div class="victory-sub">MISSION COMPLETE</div>
+        <span class="victory-badge">RECEIVER ACTIVATED</span>
+        <h3 class="victory-title" id="victory-chamber-name" style="display:none;">CHAMBER 01 CALIBRATED</h3>
+        <div class="victory-stars" id="victory-star-display">
+          <span class="vic-star active">★</span>
+          <span class="vic-star active">★</span>
+          <span class="vic-star active">★</span>
+        </div>
+      </div>
+
+      <div class="victory-stats-grid">
+        <div class="vic-stat-box">
+          <span class="vic-label">★ SCORE</span>
+          <span class="vic-val highlight-cyan" id="victory-score">012450</span>
+        </div>
+        <div class="vic-stat-box">
+          <span class="vic-label">💀 TARGET MOVES</span>
+          <span class="vic-val" id="victory-moves">02</span>
+        </div>
+        <div class="vic-stat-box">
+          <span class="vic-label">🎯 ACCURACY RATING</span>
+          <span class="vic-val highlight-cyan" id="victory-time">94%</span>
+        </div>
+        <div class="vic-stat-box">
+          <span class="vic-label">⚡ BOUNCE RATIO</span>
+          <span class="vic-val" id="victory-bounces">1 / 8</span>
+        </div>
+      </div>
+
+      <div class="victory-actions">
+        <button id="btn-victory-retry" class="action-btn fire-btn">
+          <span class="btn-icon">↺</span>
+          <span>RETRY</span>
+        </button>
+        <button id="btn-victory-levels" class="action-btn reset-btn">
+          <span class="btn-icon">⌂</span>
+          <span>MAIN MENU</span>
+        </button>
+        <button id="btn-victory-next" class="action-btn fire-btn">
+          <span class="btn-icon">▶</span>
+          <span>NEXT SECTOR</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Pause Menu Overlay (Panel 3 from Reference Image) -->
+  <div id="modal-pause-menu" class="modal-overlay hidden">
+    <div class="modal-dialog pause-dialog">
+      <h2 class="pause-header-title">PAUSED</h2>
+      <div class="pause-menu-actions">
+        <button id="btn-pause-resume" class="menu-action-btn primary">
+          <span class="btn-icon">▶</span>
+          <span>RESUME</span>
+        </button>
+        <button id="btn-pause-retry" class="menu-action-btn">
+          <span class="btn-icon">↺</span>
+          <span>RESTART</span>
+        </button>
+        <button id="btn-pause-levels" class="menu-action-btn">
+          <span class="btn-icon">⚙</span>
+          <span>SETTINGS // SECTORS</span>
+        </button>
+        <button id="btn-pause-menu" class="menu-action-btn">
+          <span class="btn-icon">⌂</span>
+          <span>MAIN MENU</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification: New Mechanic Unlocked -->
+  <div id="toast-mechanic" class="toast-mechanic hidden">
+    <div class="toast-icon">⚡</div>
+    <div class="toast-content">
+      <div class="toast-title" id="toast-title">NEW OPTICAL MECHANIC</div>
+      <div class="toast-desc" id="toast-desc">Pneumatic rail track active.</div>
+    </div>
+  </div>
+
+  <!-- Main Game Script -->
+  <script src="script.js"></script>
+</body>
+</html>
